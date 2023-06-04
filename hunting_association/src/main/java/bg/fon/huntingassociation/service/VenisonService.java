@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class VenisonService {
@@ -23,19 +24,21 @@ public class VenisonService {
         this.venisonMapper = venisonMapper;
     }
 
-    public Venison addVenison(VenisonDto venisonDto) {
+    public VenisonDto addVenison(VenisonDto venisonDto) {
         Venison venison = venisonMapper.dtoToEntity(venisonDto);
-        return venisonRepository.save(venison);
+        return venisonMapper.entityToDto(venisonRepository.save(venison));
     }
-    public List<Venison> findALlVenisons() {
-        return venisonRepository.findAll();
+    public List<VenisonDto> findALlVenisons() {
+        return venisonRepository.findAll().stream().map(venison -> venisonMapper.entityToDto(venison)).collect(Collectors.toList());
     }
-    public Venison findVenisonById(Long id) {
-        return venisonRepository.findById(id).get();
+    public VenisonDto findVenisonById(Long id) {
+        Venison venison = venisonRepository.findById(id).get();
+        return venisonMapper.entityToDto(venison);
     }
 
-    public Venison updateVenison(Venison venison) {
-        return this.venisonRepository.save(venison);
+    public VenisonDto updateVenison(VenisonDto venison) {
+        Venison updated = this.venisonRepository.save(venisonMapper.dtoToEntity(venison));
+        return venisonMapper.entityToDto(updated);
     }
 
     public void deleteVenison(Long id) {

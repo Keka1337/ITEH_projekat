@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class HunterService {
@@ -18,23 +19,24 @@ public class HunterService {
     private final HunterMapper hunterMapper;
 
     @Autowired
-    public HunterService(HunterRepository hunterRepository,HunterMapper hunterMapper,TeamService teamService) {
+    public HunterService(HunterRepository hunterRepository, HunterMapper hunterMapper, TeamService teamService) {
         this.hunterRepository = hunterRepository;
         this.hunterMapper = hunterMapper;
         this.teamService = teamService;
     }
 
-    public Hunter addHunter(HunterDto hunterDto){
-        Hunter hunter = hunterMapper.dtoToEntity(hunterDto);
-        return hunterRepository.save(hunter);
+    public HunterDto addHunter(HunterDto hunter) {
+        Hunter created = hunterMapper.dtoToEntity(hunter);
+        return hunterMapper.entityToDto(hunterRepository.save(created));
     }
 
-    public List<Hunter> findAllHunters() {
-        return hunterRepository.findAll();
+    public List<HunterDto> findAllHunters() {
+        return hunterRepository.findAll().stream().map(hunter -> hunterMapper.entityToDto(hunter)).collect(Collectors.toList());
     }
 
-    public Hunter findHunterById(Long id) throws ObjectNotFoundException {
-        return hunterRepository.findById(id).get();
+    public HunterDto findHunterById(Long id) throws ObjectNotFoundException {
+        Hunter hunter = hunterRepository.findById(id).get();
+        return hunterMapper.entityToDto(hunter);
     }
 
     public void deleteHunter(Long hunterId) {

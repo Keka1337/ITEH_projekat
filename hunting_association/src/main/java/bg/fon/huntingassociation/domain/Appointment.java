@@ -82,11 +82,11 @@ public class Appointment {
         this.comment = comment;
     }
 
-    public Area getStatus() {
+    public Area getArea() {
         return area;
     }
 
-    public void setStatus(Area area) {
+    public void setArea(Area area) {
         this.area = area;
     }
 
@@ -98,7 +98,7 @@ public class Appointment {
                 ", venison=" + venison +
                 ", team=" + team +
                 ", comment='" + comment + '\'' +
-                ", status='" + area + '\'' +
+                ", area='" + area + '\'' +
                 '}';
     }
 }

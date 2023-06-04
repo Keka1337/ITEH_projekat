@@ -60,11 +60,11 @@ public class AppointmentDto {
         this.comment = comment;
     }
 
-    public String getStatus() {
+    public String getArea() {
         return area;
     }
 
-    public void setStatus(String status) {
+    public void setArea(String area) {
         this.area = area;
     }
 

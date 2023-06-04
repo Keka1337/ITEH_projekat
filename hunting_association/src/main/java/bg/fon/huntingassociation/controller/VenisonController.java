@@ -1,8 +1,6 @@
 package bg.fon.huntingassociation.controller;
 
-import bg.fon.huntingassociation.domain.Venison;
 import bg.fon.huntingassociation.domain.dtos.VenisonDto;
-import bg.fon.huntingassociation.mappers.VenisonMapper;
 import bg.fon.huntingassociation.service.VenisonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,55 +16,52 @@ import org.springframework.web.bind.annotation.*;
 public class VenisonController {
 
     private final VenisonService venisonService;
-    private final VenisonMapper venisonMapper;
     private final Logger LOG = LoggerFactory.getLogger(VenisonController.class);
 
 
-    public VenisonController(VenisonService venisonService, VenisonMapper venisonMapper) {
+    public VenisonController(VenisonService venisonService) {
         this.venisonService = venisonService;
-        this.venisonMapper = venisonMapper;
     }
 
     @PostMapping("/add")
     public ResponseEntity<?> addVenison(@RequestBody VenisonDto venisonDto) {
-        try{
-            return new ResponseEntity<>(venisonMapper.entityToDto(venisonService.addVenison(venisonDto)), HttpStatus.CREATED);
-        }catch (Exception e){
+        try {
+            return new ResponseEntity<>(venisonService.addVenison(venisonDto), HttpStatus.CREATED);
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllVenisons() {
-        return new ResponseEntity<>(venisonService.findALlVenisons()
-                .stream()
-                .map(venison -> venisonMapper.entityToDto(venison)), HttpStatus.OK);
+        return new ResponseEntity<>(venisonService.findALlVenisons(), HttpStatus.OK);
     }
 
     @GetMapping("/find/{id}")
     public ResponseEntity<?> findVenisonById(@PathVariable("id") Long id) {
-        try{
-            return new ResponseEntity<>(venisonMapper.entityToDto(venisonService.findVenisonById(id)), HttpStatus.OK);
-        }catch (Exception e){
+        try {
+            return new ResponseEntity<>(venisonService.findVenisonById(id), HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PatchMapping("/update")
-    public ResponseEntity<?> updateVenison(@RequestBody Venison venison) {
+    public ResponseEntity<?> updateVenison(@RequestBody VenisonDto venison) {
         try {
-            return new ResponseEntity<>(venisonMapper.entityToDto(venisonService.updateVenison(venison)), HttpStatus.OK);
+            return new ResponseEntity<>(venisonService.updateVenison(venison), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteVenison(@PathVariable("id") Long id) {
         try {
             this.venisonService.deleteVenison(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 

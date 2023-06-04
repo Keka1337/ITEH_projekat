@@ -1,13 +1,14 @@
 package bg.fon.huntingassociation.service;
 
 import bg.fon.huntingassociation.domain.Appointment;
-import bg.fon.huntingassociation.exception.ObjectNotFoundException;
+import bg.fon.huntingassociation.domain.dtos.AppointmentDto;
 import bg.fon.huntingassociation.mappers.AppointmentMapper;
 import bg.fon.huntingassociation.repository.AppointmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AppointmentService {
@@ -20,16 +21,21 @@ public class AppointmentService {
         this.appointmentRepository = appointmentRepository;
         this.appointmentMapper = appointmentMapper;
     }
-    public Appointment createAppointment(Appointment appointment) {
-        return appointmentRepository.save(appointment);
+
+    public AppointmentDto createAppointment(Appointment appointment) {
+        Appointment created = appointmentRepository.save(appointment);
+        return appointmentMapper.entityToDto(created);
     }
 
-    public List<Appointment> findAllAppointments() {
-        return this.appointmentRepository.findAll();
+    public List<AppointmentDto> findAllAppointments() {
+        return this.appointmentRepository.findAll()
+                .stream()
+                .map(appointment -> appointmentMapper.entityToDto(appointment)).collect(Collectors.toList());
     }
 
-    public Appointment findAppointmentById(Long id) {
-        return appointmentRepository.findById(id).get();
+    public AppointmentDto findAppointmentById(Long id) {
+        Appointment appointment = appointmentRepository.findById(id).get();
+        return appointmentMapper.entityToDto(appointment);
     }
 
     public void deleteAppoitment(Long id) {

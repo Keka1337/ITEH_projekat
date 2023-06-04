@@ -1,8 +1,6 @@
 package bg.fon.huntingassociation.controller;
 
-import bg.fon.huntingassociation.domain.Team;
-import bg.fon.huntingassociation.exception.ObjectNotFoundException;
-import bg.fon.huntingassociation.mappers.TeamMapper;
+import bg.fon.huntingassociation.domain.dtos.TeamDto;
 import bg.fon.huntingassociation.service.TeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.bind.ValidationException;
-import java.util.List;
 
 @Transactional
 @RestController
@@ -21,17 +17,15 @@ public class TeamController {
 
     private final Logger LOG = LoggerFactory.getLogger(TeamController.class);
     private final TeamService teamService;
-    private final TeamMapper teamMapper;
 
-    public TeamController(TeamService teamService, TeamMapper teamMapper) {
+    public TeamController(TeamService teamService) {
         this.teamService = teamService;
-        this.teamMapper = teamMapper;
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addTeam(@RequestBody Team team) {
+    public ResponseEntity<?> addTeam(@RequestBody TeamDto team) {
         try {
-            return new ResponseEntity<>(teamMapper.entityToDto(teamService.createTeam(team)), HttpStatus.CREATED);
+            return new ResponseEntity<>(teamService.createTeam(team), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -39,14 +33,13 @@ public class TeamController {
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllTemas() {
-        List<Team> teams = this.teamService.findAllTeams();
-        return new ResponseEntity<>(teams.stream().map(team -> teamMapper.entityToDto(team)), HttpStatus.OK);
+        return new ResponseEntity<>(teamService.findAllTeams(), HttpStatus.OK);
     }
 
     @GetMapping("/find/{id}")
     public ResponseEntity<?> findTeamById(@PathVariable("id") Long id) {
         try {
-            return new ResponseEntity<>(teamMapper.entityToDto(teamService.findTeamById(id)), HttpStatus.OK);
+            return new ResponseEntity<>(teamService.findTeamById(id), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
