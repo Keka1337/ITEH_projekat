@@ -5,6 +5,8 @@ import bg.fon.huntingassociation.domain.dtos.AppointmentDto;
 import bg.fon.huntingassociation.mappers.AppointmentMapper;
 import bg.fon.huntingassociation.repository.AppointmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,4 +44,9 @@ public class AppointmentService {
         this.appointmentRepository.deleteAppointmentById(id);
     }
 
+    public List<AppointmentDto> findAllPageable(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        List<Appointment> appointments = this.appointmentRepository.findAll(pageable).getContent();
+        return appointments.stream().map(appointment -> appointmentMapper.entityToDto(appointment)).collect(Collectors.toList());
+    }
 }

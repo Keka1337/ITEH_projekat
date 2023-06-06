@@ -2,10 +2,11 @@ package bg.fon.huntingassociation.service;
 
 import bg.fon.huntingassociation.domain.Team;
 import bg.fon.huntingassociation.domain.dtos.TeamDto;
-import bg.fon.huntingassociation.exception.ObjectNotFoundException;
 import bg.fon.huntingassociation.mappers.TeamMapper;
 import bg.fon.huntingassociation.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.ValidationException;
@@ -42,4 +43,9 @@ public class TeamService {
         teamRepository.deleteTeamById(id);
     }
 
+    public List<TeamDto> findAllPageable(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        List<Team> teams = this.teamRepository.findAll(pageable).getContent();
+        return teams.stream().map(team -> teamMapper.entityToDto(team)).collect(Collectors.toList());
+    }
 }

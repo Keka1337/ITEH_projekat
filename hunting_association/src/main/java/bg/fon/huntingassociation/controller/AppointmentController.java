@@ -33,6 +33,12 @@ public class AppointmentController {
         return new ResponseEntity<>(appointmentService.findAllAppointments(), HttpStatus.OK);
     }
 
+    @GetMapping("/all-pageable")
+    public ResponseEntity<?> getAllAppointmentsPageable(@RequestParam("pageNumber") int pageNumber,
+                                                        @RequestParam("pageSize") int pageSize) {
+        return new ResponseEntity<>(appointmentService.findAllPageable(pageNumber,pageSize), HttpStatus.OK);
+    }
+
     @GetMapping("/find/{id}")
     public ResponseEntity<?> getAppointmentById(@PathVariable("id") Long id) {
         try {

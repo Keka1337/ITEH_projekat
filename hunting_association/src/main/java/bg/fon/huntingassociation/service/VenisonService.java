@@ -2,10 +2,11 @@ package bg.fon.huntingassociation.service;
 
 import bg.fon.huntingassociation.domain.Venison;
 import bg.fon.huntingassociation.domain.dtos.VenisonDto;
-import bg.fon.huntingassociation.exception.ObjectNotFoundException;
 import bg.fon.huntingassociation.mappers.VenisonMapper;
 import bg.fon.huntingassociation.repository.VenisonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,4 +46,9 @@ public class VenisonService {
         this.venisonRepository.deleteVenisonById(id);
     }
 
+    public List<VenisonDto> findAllPageable(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        List<Venison> hunters = this.venisonRepository.findAll(pageable).getContent();
+        return hunters.stream().map(venison -> venisonMapper.entityToDto(venison)).collect(Collectors.toList());
+    }
 }

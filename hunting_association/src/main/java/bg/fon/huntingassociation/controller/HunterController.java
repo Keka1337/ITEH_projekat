@@ -36,6 +36,12 @@ public class HunterController {
         return new ResponseEntity<>(hunterService.findAllHunters(), HttpStatus.OK);
     }
 
+    @GetMapping("/all-pageable")
+    public ResponseEntity<?> getAllHuntersPageable(@RequestParam("pageNumber") int pageNumber,
+                                                   @RequestParam("pageSize") int pageSize) {
+        return new ResponseEntity<>(hunterService.findAllPageable(pageNumber,pageSize), HttpStatus.OK);
+    }
+
     @GetMapping("/find/{id}")
     public ResponseEntity<?> getHunterById(@PathVariable("id") Long id) {
         try {

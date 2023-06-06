@@ -45,6 +45,12 @@ public class TeamController {
         }
     }
 
+    @GetMapping("/all-pageable")
+    public ResponseEntity<?> getAllTeamsPageable(@RequestParam("pageNumber") int pageNumber,
+                                                 @RequestParam("pageSize") int pageSize) {
+        return new ResponseEntity<>(teamService.findAllPageable(pageNumber,pageSize), HttpStatus.OK);
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteTeam(@PathVariable("id") Long id) {
         try {

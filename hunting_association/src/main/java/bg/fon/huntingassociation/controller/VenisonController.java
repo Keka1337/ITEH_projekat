@@ -37,6 +37,12 @@ public class VenisonController {
         return new ResponseEntity<>(venisonService.findALlVenisons(), HttpStatus.OK);
     }
 
+    @GetMapping("/all-pageable")
+    public ResponseEntity<?> getAllVenisonsPageable(@RequestParam("pageNumber") int pageNumber,
+                                                    @RequestParam("pageSize") int pageSize) {
+        return new ResponseEntity<>(venisonService.findAllPageable(pageNumber,pageSize), HttpStatus.OK);
+    }
+
     @GetMapping("/find/{id}")
     public ResponseEntity<?> findVenisonById(@PathVariable("id") Long id) {
         try {
