@@ -5,11 +5,13 @@ import bg.fon.huntingassociation.domain.dtos.TeamDto;
 import bg.fon.huntingassociation.mappers.TeamMapper;
 import bg.fon.huntingassociation.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.ValidationException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,9 +45,18 @@ public class TeamService {
         teamRepository.deleteTeamById(id);
     }
 
-    public List<TeamDto> findAllPageable(int pageNumber, int pageSize) {
+    public HashMap<String,Object> findAllPageable(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        List<Team> teams = this.teamRepository.findAll(pageable).getContent();
-        return teams.stream().map(team -> teamMapper.entityToDto(team)).collect(Collectors.toList());
+
+        Page page = this.teamRepository.findAll(pageable);
+
+        List<Team> teams = page.getContent();
+        List<TeamDto> dtos = teams.stream().map(team -> teamMapper.entityToDto(team)).collect(Collectors.toList());
+        Long total = page.getTotalElements();
+
+        HashMap<String,Object> map = new HashMap();
+        map.put("total", total);
+        map.put("content", dtos);
+        return map;
     }
 }

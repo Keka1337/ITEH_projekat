@@ -8,11 +8,14 @@ import bg.fon.huntingassociation.repository.HunterRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,9 +52,18 @@ public class HunterService {
         hunterRepository.deleteById(hunterId);
     }
 
-    public List<HunterDto> findAllPageable(int pageNumber, int pageSize) {
+    public HashMap<String, Object> findAllPageable(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        List<Hunter> hunters = this.hunterRepository.findAll(pageable).getContent();
-        return hunters.stream().map(hunter -> hunterMapper.entityToDto(hunter)).collect(Collectors.toList());
+
+        Page page = this.hunterRepository.findAll(pageable);
+
+        List<Hunter> hunters = page.getContent();
+        List<HunterDto> dtos = hunters.stream().map(hunter -> hunterMapper.entityToDto(hunter)).collect(Collectors.toList());
+        Long total = page.getTotalElements();
+
+        HashMap<String, Object> map = new HashMap();
+        map.put("total", total);
+        map.put("content", dtos);
+        return map;
     }
 }

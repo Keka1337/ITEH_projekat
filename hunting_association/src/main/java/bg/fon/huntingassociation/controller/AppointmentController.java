@@ -1,11 +1,15 @@
 package bg.fon.huntingassociation.controller;
 
 import bg.fon.huntingassociation.domain.Appointment;
+import bg.fon.huntingassociation.domain.dtos.AppointmentDto;
 import bg.fon.huntingassociation.service.AppointmentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
 
 
 @Transactional

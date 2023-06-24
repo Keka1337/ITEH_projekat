@@ -5,10 +5,12 @@ import bg.fon.huntingassociation.domain.dtos.VenisonDto;
 import bg.fon.huntingassociation.mappers.VenisonMapper;
 import bg.fon.huntingassociation.repository.VenisonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,9 +48,19 @@ public class VenisonService {
         this.venisonRepository.deleteVenisonById(id);
     }
 
-    public List<VenisonDto> findAllPageable(int pageNumber, int pageSize) {
+    public HashMap<String,Object> findAllPageable(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        List<Venison> hunters = this.venisonRepository.findAll(pageable).getContent();
-        return hunters.stream().map(venison -> venisonMapper.entityToDto(venison)).collect(Collectors.toList());
+
+        Page page = this.venisonRepository.findAll(pageable);
+
+        List<Venison> hunters = page.getContent();
+        List<VenisonDto> dtos = hunters.stream().map(venison -> venisonMapper.entityToDto(venison)).collect(Collectors.toList());
+        Long total = page.getTotalElements();
+
+        HashMap<String,Object> map = new HashMap();
+        map.put("total", total);
+        map.put("content", dtos);
+
+        return map;
     }
 }

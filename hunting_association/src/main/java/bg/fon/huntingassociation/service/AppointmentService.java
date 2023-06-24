@@ -5,11 +5,14 @@ import bg.fon.huntingassociation.domain.dtos.AppointmentDto;
 import bg.fon.huntingassociation.mappers.AppointmentMapper;
 import bg.fon.huntingassociation.repository.AppointmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,9 +47,19 @@ public class AppointmentService {
         this.appointmentRepository.deleteAppointmentById(id);
     }
 
-    public List<AppointmentDto> findAllPageable(int pageNumber, int pageSize) {
+    public  HashMap<String, Object> findAllPageable(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        List<Appointment> appointments = this.appointmentRepository.findAll(pageable).getContent();
-        return appointments.stream().map(appointment -> appointmentMapper.entityToDto(appointment)).collect(Collectors.toList());
+
+        Page page = this.appointmentRepository.findAll(pageable);
+
+        List<Appointment> appointments = page.getContent();
+        List<AppointmentDto> dtos = appointments.stream().map(appointment -> appointmentMapper.entityToDto(appointment)).collect(Collectors.toList());
+        Long total = page.getTotalElements();
+
+        HashMap<String, Object> map = new HashMap();
+        map.put("total", total);
+        map.put("content",dtos);
+
+        return map;
     }
 }
