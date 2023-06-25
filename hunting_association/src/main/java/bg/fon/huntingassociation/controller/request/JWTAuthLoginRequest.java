@@ -1,11 +1,11 @@
-package bg.fon.huntingassociation.domain.dtos;
+package bg.fon.huntingassociation.controller.request;
 
-public class LoginDto {
+public class JWTAuthLoginRequest {
 
     String username;
     String password;
 
-    public LoginDto(String usernameOrEmail, String password) {
+    public JWTAuthLoginRequest(String usernameOrEmail, String password) {
         this.username = usernameOrEmail;
         this.password = password;
     }

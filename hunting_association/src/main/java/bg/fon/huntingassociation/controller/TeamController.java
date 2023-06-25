@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Transactional
 @RestController
-@RequestMapping("/team")
+@RequestMapping("api/v1/team")
 public class TeamController {
 
     private final Logger LOG = LoggerFactory.getLogger(TeamController.class);
@@ -47,8 +47,10 @@ public class TeamController {
 
     @GetMapping("/all-pageable")
     public ResponseEntity<?> getAllTeamsPageable(@RequestParam("pageNumber") int pageNumber,
-                                                 @RequestParam("pageSize") int pageSize) {
-        return new ResponseEntity<>(teamService.findAllPageable(pageNumber,pageSize), HttpStatus.OK);
+                                                 @RequestParam("pageSize") int pageSize,
+                                                 @RequestParam(defaultValue = "id") String sortBy,
+                                                 @RequestParam(required = false) String filter) {
+        return new ResponseEntity<>(teamService.findAllPageable(pageNumber,pageSize, sortBy, filter), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")

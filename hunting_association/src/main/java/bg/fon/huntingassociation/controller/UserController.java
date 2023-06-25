@@ -4,13 +4,10 @@ import bg.fon.huntingassociation.exception.AuthenticationException;
 import bg.fon.huntingassociation.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("api/v1/user")
 public class UserController {
 
     private final UserService userService;
@@ -21,7 +18,9 @@ public class UserController {
 
     @GetMapping("/login/{username}/{password}")
     public ResponseEntity<?> login(@PathVariable("username") String username,
-                                   @PathVariable("password") String password) {
+                                   @PathVariable("password") String password,
+                                   @RequestParam(defaultValue = "id") String sortBy,
+                                   @RequestParam(required = false) String filter) {
         try {
             return new ResponseEntity<>(userService.login(username,password), HttpStatus.OK);
         } catch (AuthenticationException e) {

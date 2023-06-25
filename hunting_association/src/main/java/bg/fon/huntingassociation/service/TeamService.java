@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.ValidationException;
@@ -45,10 +46,14 @@ public class TeamService {
         teamRepository.deleteTeamById(id);
     }
 
-    public HashMap<String,Object> findAllPageable(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+    public HashMap<String,Object> findAllPageable(int pageNumber, int pageSize, String sortBy, String filter) {
+        Pageable pageable = PageRequest.of(pageNumber,pageSize, Sort.by(sortBy));
 
-        Page page = this.teamRepository.findAll(pageable);
+        Page page;
+        if(filter == null)
+            page = this.teamRepository.findAll(pageable);
+        else
+            page = this.teamRepository.findByNameContaining(filter,pageable);
 
         List<Team> teams = page.getContent();
         List<TeamDto> dtos = teams.stream().map(team -> teamMapper.entityToDto(team)).collect(Collectors.toList());

@@ -1,7 +1,7 @@
 package bg.fon.huntingassociation.controller;
 
-import bg.fon.huntingassociation.domain.JWTAuthResponse;
-import bg.fon.huntingassociation.domain.dtos.LoginDto;
+import bg.fon.huntingassociation.controller.response.JWTAuthResponse;
+import bg.fon.huntingassociation.controller.request.JWTAuthLoginRequest;
 import bg.fon.huntingassociation.service.AuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("api/v1/auth")
 public class AuthRestController {
 
 
@@ -24,14 +24,10 @@ public class AuthRestController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JWTAuthResponse> authenticate(@RequestBody LoginDto loginDto){
-        LOG.info("Sending authentication request: username:" + loginDto.getUsername() + ", password: " + loginDto.getPassword());
-        String token = authService.login(loginDto);
-        LOG.info("Generated token:" + token);
+    public ResponseEntity<JWTAuthResponse> authenticate(@RequestBody JWTAuthLoginRequest JWTAuthRequest){
+        LOG.info("Sending authentication request: username:" + JWTAuthRequest.getUsername() +
+                ", password: " + JWTAuthRequest.getPassword());
 
-        JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
-        jwtAuthResponse.setAccessToken(token);
-
-        return ResponseEntity.ok(jwtAuthResponse);
+        return ResponseEntity.ok(authService.login(JWTAuthRequest));
     }
 }

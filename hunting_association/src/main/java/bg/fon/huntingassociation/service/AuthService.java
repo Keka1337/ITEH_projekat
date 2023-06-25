@@ -1,10 +1,9 @@
 package bg.fon.huntingassociation.service;
 
-import bg.fon.huntingassociation.auth.JwtTokenProvider;
-import bg.fon.huntingassociation.domain.dtos.LoginDto;
+import bg.fon.huntingassociation.security.JwtTokenProvider;
+import bg.fon.huntingassociation.controller.response.JWTAuthResponse;
+import bg.fon.huntingassociation.controller.request.JWTAuthLoginRequest;
 import bg.fon.huntingassociation.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,7 +18,6 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
-    private final Logger LOG = LoggerFactory.getLogger(AuthService.class.getName());
 
     public AuthService(AuthenticationManager authenticationManager, UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
         this.authenticationManager = authenticationManager;
@@ -28,15 +26,17 @@ public class AuthService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public String login(LoginDto loginDto) {
-        LOG.info("AuthService calling for authentication");
+    public JWTAuthResponse login(JWTAuthLoginRequest JWTAuthRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginDto.getUsername(), loginDto.getPassword()));
-        LOG.info(authentication.getName());
+                JWTAuthRequest.getUsername(), JWTAuthRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String token = jwtTokenProvider.generateToken(authentication);
+        String role = userRepository.findRoleByUsername(JWTAuthRequest.getUsername());
 
-        return token;
+        JWTAuthResponse response = new JWTAuthResponse();
+        response.setAccessToken(token);
+        response.setRole(role);
+        return response;
     }
 }

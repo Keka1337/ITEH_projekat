@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Transactional
 @RestController
-@RequestMapping("/hunter")
+@RequestMapping("api/v1/hunter")
 public class HunterController {
 
     private final HunterService hunterService;
@@ -38,8 +38,10 @@ public class HunterController {
 
     @GetMapping("/all-pageable")
     public ResponseEntity<?> getAllHuntersPageable(@RequestParam("pageNumber") int pageNumber,
-                                                   @RequestParam("pageSize") int pageSize) {
-        return new ResponseEntity<>(hunterService.findAllPageable(pageNumber,pageSize), HttpStatus.OK);
+                                                   @RequestParam("pageSize") int pageSize,
+                                                   @RequestParam(defaultValue = "id") String sortBy,
+                                                   @RequestParam(required = false) String filter) {
+        return new ResponseEntity<>(hunterService.findAllPageable(pageNumber, pageSize, sortBy, filter), HttpStatus.OK);
     }
 
     @GetMapping("/find/{id}")

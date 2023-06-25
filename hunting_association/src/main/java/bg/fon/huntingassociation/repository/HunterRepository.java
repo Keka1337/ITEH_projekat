@@ -1,6 +1,8 @@
 package bg.fon.huntingassociation.repository;
 
 import bg.fon.huntingassociation.domain.Hunter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface HunterRepository extends JpaRepository<Hunter, Long> {
@@ -9,4 +11,5 @@ public interface HunterRepository extends JpaRepository<Hunter, Long> {
 
     Hunter findByLicenceNum(String licenceNum);
 
+    Page findByNameContaining(String filter, Pageable pageable);
 }

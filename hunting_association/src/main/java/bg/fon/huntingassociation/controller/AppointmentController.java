@@ -1,20 +1,17 @@
 package bg.fon.huntingassociation.controller;
 
 import bg.fon.huntingassociation.domain.Appointment;
-import bg.fon.huntingassociation.domain.dtos.AppointmentDto;
 import bg.fon.huntingassociation.service.AppointmentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
 
 
 @Transactional
 @RestController
-@RequestMapping("/appointment")
+@RequestMapping("api/v1/appointment")
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
@@ -39,8 +36,9 @@ public class AppointmentController {
 
     @GetMapping("/all-pageable")
     public ResponseEntity<?> getAllAppointmentsPageable(@RequestParam("pageNumber") int pageNumber,
-                                                        @RequestParam("pageSize") int pageSize) {
-        return new ResponseEntity<>(appointmentService.findAllPageable(pageNumber,pageSize), HttpStatus.OK);
+                                                        @RequestParam("pageSize") int pageSize,
+                                                        @RequestParam(defaultValue = "date") String sortBy) {
+        return new ResponseEntity<>(appointmentService.findAllPageable(pageNumber,pageSize, sortBy), HttpStatus.OK);
     }
 
     @GetMapping("/find/{id}")

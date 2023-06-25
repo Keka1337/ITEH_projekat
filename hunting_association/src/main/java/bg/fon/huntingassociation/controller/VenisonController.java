@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Transactional
 @RestController
-@RequestMapping("/venison")
+@RequestMapping("api/v1/venison")
 public class VenisonController {
 
     private final VenisonService venisonService;
@@ -39,8 +39,10 @@ public class VenisonController {
 
     @GetMapping("/all-pageable")
     public ResponseEntity<?> getAllVenisonsPageable(@RequestParam("pageNumber") int pageNumber,
-                                                    @RequestParam("pageSize") int pageSize) {
-        return new ResponseEntity<>(venisonService.findAllPageable(pageNumber,pageSize), HttpStatus.OK);
+                                                    @RequestParam("pageSize") int pageSize,
+                                                    @RequestParam(defaultValue = "id") String sortBy,
+                                                    @RequestParam(required = false) String filter) {
+        return new ResponseEntity<>(venisonService.findAllPageable(pageNumber, pageSize, sortBy, filter), HttpStatus.OK);
     }
 
     @GetMapping("/find/{id}")

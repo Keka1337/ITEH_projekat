@@ -1,4 +1,4 @@
-package bg.fon.huntingassociation.auth;
+package bg.fon.huntingassociation.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

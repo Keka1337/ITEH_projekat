@@ -1,4 +1,4 @@
-package bg.fon.huntingassociation.auth;
+package bg.fon.huntingassociation.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
