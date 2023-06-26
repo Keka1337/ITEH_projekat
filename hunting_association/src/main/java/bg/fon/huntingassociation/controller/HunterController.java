@@ -62,4 +62,13 @@ public class HunterController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PatchMapping("edit")
+    public ResponseEntity<?> editHunter(@RequestBody HunterDto hunter) {
+        try {
+            return new ResponseEntity<>(hunterService.editHunter(hunter), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

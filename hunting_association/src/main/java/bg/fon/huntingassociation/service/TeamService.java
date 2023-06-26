@@ -64,4 +64,9 @@ public class TeamService {
         map.put("content", dtos);
         return map;
     }
+
+    public TeamDto editTeam(TeamDto teamDto) {
+        Team team = this.teamRepository.save(teamMapper.dtoToEntity(teamDto));
+        return teamMapper.entityToDto(team);
+    }
 }

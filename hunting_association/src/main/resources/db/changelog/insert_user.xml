@@ -1,0 +1,39 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="insert_user_role" author="keka">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="roles"/>
+        </preConditions>
+        <insert  tableName="roles">
+            <column name="name" value="USER"/>
+        </insert >
+    </changeSet>
+
+    <changeSet id="insert_user" author="keka">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user"/>
+        </preConditions>
+        <insert  tableName="user">
+            <column name="name" value="User"/>
+            <column name="lastname" value="User"/>
+            <column name="username" value="user"/>
+            <column name="password" value="$2a$06$a6fkppD7Nr6/HcYkCnOpMOqxQXaBS9awRUwrDkn2u57NCWIqkWPk."/>
+            <column name="email" value="user@user.com"/>
+        </insert >
+    </changeSet>
+
+    <changeSet id="insert_user_into_users_roles" author="keka">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="users_roles"/>
+        </preConditions>
+        <insert  tableName="users_roles">
+            <column name="user_id" valueComputed="(SELECT user_id FROM user WHERE username='user')"/>
+            <column name="role_id" valueComputed="(SELECT id FROM roles WHERE name='USER')"/>
+        </insert >
+    </changeSet>
+
+</databaseChangeLog>
+

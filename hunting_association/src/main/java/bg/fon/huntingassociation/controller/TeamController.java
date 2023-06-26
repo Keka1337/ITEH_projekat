@@ -63,4 +63,12 @@ public class TeamController {
         }
     }
 
+    @PatchMapping("edit")
+    public ResponseEntity<?> editHunter(@RequestBody TeamDto team) {
+        try {
+            return new ResponseEntity<>(teamService.editTeam(team), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

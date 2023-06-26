@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,5 +69,10 @@ public class HunterService {
         map.put("total", total);
         map.put("content", dtos);
         return map;
+    }
+
+    public HunterDto editHunter(HunterDto hunterDto) {
+        Hunter hunter = this.hunterRepository.save(hunterMapper.dtoToEntity(hunterDto));
+        return hunterMapper.entityToDto(hunter);
     }
 }

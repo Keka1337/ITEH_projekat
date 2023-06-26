@@ -2,6 +2,7 @@ package bg.fon.huntingassociation.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,16 +28,18 @@ public class SpringSecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-//        http.csrf().disable().authorizeRequests().antMatchers("/login").permitAll();
-//        return http.build();
-
-        http.cors().and()
+        http.cors()
+                .and()
                 .csrf().disable();
-//        http.authorizeRequests().antMatchers("/hunters").permitAll();
-//                .authorizeHttpRequests((authorize) -> {
-//                    authorize.requestMatchers("/api/auth/**").permitAll();
-//                    authorize.anyRequest().authenticated();
-//                });
+
+        http.authorizeHttpRequests(authorize -> authorize
+                        .antMatchers("/api/v1/auth/login").permitAll()
+                        .antMatchers(HttpMethod.PATCH).hasAuthority("ADMIN")
+                        .antMatchers(HttpMethod.DELETE).hasAuthority("ADMIN")
+                        .anyRequest()
+                        .authenticated()
+                );
+
         return http.build();
 
     }

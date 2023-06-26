@@ -14,5 +14,7 @@
     <include file="add_comment_into_appointment.xml" relativeToChangelogFile="true"/>
     <include file="add_area_into_appointment.xml" relativeToChangelogFile="true"/>
     <include file="add_email_into_user.xml" relativeToChangelogFile="true"/>
+    <include file="insert_admin.xml" relativeToChangelogFile="true"/>
+    <include file="insert_user.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
