@@ -1,10 +1,12 @@
 package bg.fon.huntingassociation.service;
 
 import bg.fon.huntingassociation.domain.Hunter;
+import bg.fon.huntingassociation.domain.Team;
 import bg.fon.huntingassociation.domain.dtos.HunterDto;
 import bg.fon.huntingassociation.exception.ObjectNotFoundException;
 import bg.fon.huntingassociation.mappers.HunterMapper;
 import bg.fon.huntingassociation.repository.HunterRepository;
+import bg.fon.huntingassociation.repository.TeamRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.xml.bind.ValidationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,20 +25,24 @@ import java.util.stream.Collectors;
 public class HunterService {
 
     private final HunterRepository hunterRepository;
+    private final TeamRepository teamRepository;
     private final HunterMapper hunterMapper;
     Logger LOG = LoggerFactory.getLogger(HunterService.class.getName());
 
     @Autowired
-    public HunterService(HunterRepository hunterRepository, HunterMapper hunterMapper) {
+    public HunterService(HunterRepository hunterRepository, TeamRepository teamRepository, HunterMapper hunterMapper) {
         this.hunterRepository = hunterRepository;
+        this.teamRepository = teamRepository;
         this.hunterMapper = hunterMapper;
     }
 
-    public HunterDto addHunter(HunterDto hunter) {
-        LOG.info("Hunter: " + hunter.getTeam().getId());
-        Hunter created = hunterMapper.dtoToEntity(hunter);
-        LOG.info("Hunter: " + created);
-        return hunterMapper.entityToDto(hunterRepository.save(created));
+    public HunterDto addHunter(HunterDto hunter) throws Exception {
+        if(hunterRepository.existsByJmbg(hunter.getJmbg()) || hunterRepository.existsByLicenceNum(hunter.getLicenceNum()))
+            throw new Exception("Hunter with provided jmbg or licence number already exists!");
+        Hunter created = hunterRepository.save(hunterMapper.dtoToEntity(hunter));
+        Team team = teamRepository.findById(created.getTeam().getId()).get();
+        created.setTeam(team);
+        return hunterMapper.entityToDto(created);
     }
 
     public List<HunterDto> findAllHunters() {

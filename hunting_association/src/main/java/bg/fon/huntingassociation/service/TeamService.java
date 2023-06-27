@@ -4,6 +4,7 @@ import bg.fon.huntingassociation.domain.Team;
 import bg.fon.huntingassociation.domain.dtos.TeamDto;
 import bg.fon.huntingassociation.mappers.TeamMapper;
 import bg.fon.huntingassociation.repository.TeamRepository;
+import org.aspectj.apache.bcel.ExceptionConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,7 +29,9 @@ public class TeamService {
         this.teamMapper = teamMapper;
     }
 
-    public TeamDto createTeam(TeamDto team) throws ValidationException {
+    public TeamDto createTeam(TeamDto team) throws Exception {
+        if(teamRepository.existsByName(team.getName()))
+            throw new Exception("Team with provided name already exists!");
         Team created = teamRepository.save(teamMapper.dtoToEntity(team));
         return teamMapper.entityToDto(created);
     }
@@ -65,7 +68,9 @@ public class TeamService {
         return map;
     }
 
-    public TeamDto editTeam(TeamDto teamDto) {
+    public TeamDto editTeam(TeamDto teamDto) throws Exception {
+        if(teamRepository.existsByName(teamDto.getName()))
+            throw new Exception("Team with provided name already exists!");
         Team team = this.teamRepository.save(teamMapper.dtoToEntity(teamDto));
         return teamMapper.entityToDto(team);
     }

@@ -10,4 +10,6 @@ public interface TeamRepository extends JpaRepository<Team,Long> {
     void deleteTeamById(Long id);
 
     Page findByNameContaining(String filter, Pageable pageable);
+
+    boolean existsByName(String name);
 }

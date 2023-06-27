@@ -12,4 +12,8 @@ public interface HunterRepository extends JpaRepository<Hunter, Long> {
     Hunter findByLicenceNum(String licenceNum);
 
     Page findByNameContaining(String filter, Pageable pageable);
+
+    boolean existsByJmbg(String jmbg);
+
+    boolean existsByLicenceNum(String licenceNum);
 }
